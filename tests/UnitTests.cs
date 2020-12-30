@@ -130,5 +130,17 @@ namespace tests
             Assert.AreEqual("A", vm.Output.ToString());
         }
 
+        [Test]
+        public void Not()
+        {
+            var vm = new VM();
+            vm.Memory[0] = 14;     // not
+            vm.Memory[1] = 32768;  // reg 0
+            vm.Memory[2] = 0x5555; // literal
+
+            vm.Run();
+            Assert.AreEqual(0x2aaa, vm.Memory[32768]);
+        }
+
     }
 }
