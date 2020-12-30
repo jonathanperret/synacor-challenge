@@ -10,7 +10,7 @@ using static Util;
 
 public class VM
 {
-    public readonly ushort[] Memory = new ushort[32775];
+    public readonly ushort[] Memory = new ushort[32776];
     public int Cycles { get; private set; }
     public TextWriter Output { get; set; } = new StringWriter();
     public ushort PC { get; private set; } = 0;
@@ -25,7 +25,7 @@ public class VM
             ushort a = Memory[PC + 1];
             ushort b = Memory[PC + 2];
             ushort c = Memory[PC + 3];
-            // W($"PC={PC} op={opcode}");
+            // W($"PC={PC} op={opcode} a={a} b={b} c={c}");
             switch (opcode)
             {
                 case 0: // halt — stop execution and terminate the program
@@ -53,9 +53,11 @@ public class VM
                     break;
                 case 7: // jt a b — if <a> is nonzero, jump to <b>
                     PC += 3;
+                    if (GetValue(a) != 0) PC = GetValue(b);
                     break;
                 case 8: // jf a b — if <a> is zero, jump to <b>
                     PC += 3;
+                    if (GetValue(a) == 0) PC = GetValue(b);
                     break;
                 case 9: // add a b c — assign into <a> the sum of <b> and <c> (modulo 32768)
                     PC += 4;
@@ -125,7 +127,7 @@ public static class Program
 
     static void Main(string[] args)
     {
-        var bytes = File.ReadAllBytes(args[0]);
+        var bytes = File.ReadAllBytes(args.Length > 0 ? args[0] : "../challenge.bin");
         var vm = new VM();
         for (int i = 0; i < bytes.Length - 1; i += 2)
         {

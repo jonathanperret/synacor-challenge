@@ -96,5 +96,39 @@ namespace tests
             Assert.AreEqual("A", vm.Output.ToString());
         }
 
+        [Test]
+        public void Jt()
+        {
+            var vm = new VM();
+            vm.Memory[0] = 7;     // jt
+            vm.Memory[1] = 32768; // reg 0
+            vm.Memory[2] = 10;     // literal
+
+            vm.Memory[10] = 19;   // out
+            vm.Memory[11] = 65;   // literal
+
+            vm.Memory[32768] = 1;
+
+            vm.Run();
+            Assert.AreEqual("A", vm.Output.ToString());
+        }
+
+        [Test]
+        public void Jf()
+        {
+            var vm = new VM();
+            vm.Memory[0] = 8;     // jt
+            vm.Memory[1] = 32768; // reg 0
+            vm.Memory[2] = 10;     // literal
+
+            vm.Memory[10] = 19;   // out
+            vm.Memory[11] = 65;   // literal
+
+            vm.Memory[32768] = 0;
+
+            vm.Run();
+            Assert.AreEqual("A", vm.Output.ToString());
+        }
+
     }
 }
