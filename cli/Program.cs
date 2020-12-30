@@ -25,6 +25,7 @@ public class VM
             ushort a = Memory[PC + 1];
             ushort b = Memory[PC + 2];
             ushort c = Memory[PC + 3];
+            // W($"PC={PC} op={opcode}");
             switch (opcode)
             {
                 case 0: // halt — stop execution and terminate the program
@@ -124,14 +125,14 @@ public static class Program
 
     static void Main(string[] args)
     {
-        var text = File.ReadAllText("input.txt");
-        var lines = File.ReadAllLines("input.txt");
-        // var numbers = lines.Select(int.Parse).ToArray();
-        // var blocks = numbers.Window(26);
-        // int max = numbers.Max();
-        // int min = numbers.Min();
-
-        // var result = Part1(lines);
-        // W($"{result}");
+        var bytes = File.ReadAllBytes(args[0]);
+        var vm = new VM();
+        for (int i = 0; i < bytes.Length - 1; i += 2)
+        {
+            ushort val = (ushort)(bytes[i] + (bytes[i + 1] << 8));
+            vm.Memory[i / 2] = val;
+        }
+        vm.Output = Console.Out;
+        vm.Run();
     }
 }
