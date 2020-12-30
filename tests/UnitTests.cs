@@ -12,11 +12,23 @@ namespace tests
         }
 
         [Test]
-        public void TestPart1()
+        public void TestHalt()
         {
-            Assert.AreEqual(11, Part1(
-                File.ReadAllLines("../../../../cli/example.txt")
-            ));
+            var vm = new VM();
+            vm.Memory[0] = 0;
+            vm.Run();
+            Assert.AreEqual(1, vm.Cycles);
+        }
+
+        [Test]
+        public void TestOut()
+        {
+            var vm = new VM();
+            vm.Memory[0] = 19;
+            vm.Memory[1] = 65;
+            vm.Memory[2] = 0;
+            vm.Run();
+            Assert.AreEqual("A", vm.Output.ToString());
         }
     }
 }
