@@ -77,5 +77,24 @@ namespace tests
             CollectionAssert.AreEqual(new[] { 456, 123 }, vm.Stack.ToArray());
         }
 
+        [Test]
+        public void Jmp()
+        {
+            var vm = new VM();
+            vm.Memory[0] = 6;     // jmp
+            vm.Memory[1] = 5;     // literal
+
+            vm.Memory[5] = 6;     // jmp
+            vm.Memory[6] = 32768; // reg 0
+
+            vm.Memory[10] = 19;   // out
+            vm.Memory[11] = 65;   // literal
+
+            vm.Memory[32768] = 10;
+
+            vm.Run();
+            Assert.AreEqual("A", vm.Output.ToString());
+        }
+
     }
 }

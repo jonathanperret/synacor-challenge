@@ -49,7 +49,7 @@ public class VM
                     PC += 4;
                     break;
                 case 6: // jmp a — jump to <a>
-                    PC += 2;
+                    PC = GetValue(a);
                     break;
                 case 7: // jt a b — if <a> is nonzero, jump to <b>
                     PC += 3;
