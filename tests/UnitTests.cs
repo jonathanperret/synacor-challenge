@@ -12,7 +12,7 @@ namespace tests
         }
 
         [Test]
-        public void TestHalt()
+        public void Halt()
         {
             var vm = new VM();
             vm.Memory[0] = 0;
@@ -21,14 +21,61 @@ namespace tests
         }
 
         [Test]
-        public void TestOut()
+        public void Out()
         {
             var vm = new VM();
-            vm.Memory[0] = 19;
-            vm.Memory[1] = 65;
-            vm.Memory[2] = 0;
+            vm.Memory[0] = 19;     // out
+            vm.Memory[1] = 65;     // literal
+
+            vm.Memory[2] = 19;     // out
+            vm.Memory[3] = 32768;  // reg 0
+
+            vm.Memory[32768] = 66; // literal
+
             vm.Run();
-            Assert.AreEqual("A", vm.Output.ToString());
+            Assert.AreEqual("AB", vm.Output.ToString());
         }
+
+        [Test]
+        public void SetRegisterFromLiteral()
+        {
+            var vm = new VM();
+            vm.Memory[0] = 1;     // set
+            vm.Memory[1] = 32768; // reg 0
+            vm.Memory[2] = 123;   // literal
+            vm.Run();
+            Assert.AreEqual(123, vm.Memory[32768]);
+        }
+
+        [Test]
+        public void SetRegisterFromRegister()
+        {
+            var vm = new VM();
+            vm.Memory[0] = 1;     // set
+            vm.Memory[1] = 32768; // reg 0
+            vm.Memory[2] = 32769; // reg 1
+
+            vm.Memory[32769] = 123;
+
+            vm.Run();
+            Assert.AreEqual(123, vm.Memory[32768]);
+        }
+
+        [Test]
+        public void Push()
+        {
+            var vm = new VM();
+            vm.Memory[0] = 2;     // push
+            vm.Memory[1] = 123;   // literal
+
+            vm.Memory[2] = 2;     // push
+            vm.Memory[3] = 32769; // reg 1
+
+            vm.Memory[32769] = 456;
+
+            vm.Run();
+            CollectionAssert.AreEqual(new[] { 456, 123 }, vm.Stack.ToArray());
+        }
+
     }
 }

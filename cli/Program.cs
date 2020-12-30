@@ -14,6 +14,7 @@ public class VM
     public int Cycles { get; private set; }
     public TextWriter Output { get; set; } = new StringWriter();
     public ushort PC { get; private set; } = 0;
+    public readonly Stack<ushort> Stack = new Stack<ushort>();
 
     public void Run()
     {
@@ -31,9 +32,11 @@ public class VM
                     return;
                 case 1: // set a b — set register <a> to the value of <b>
                     PC += 3;
+                    Memory[a] = GetValue(b);
                     break;
                 case 2: // push a — push <a> onto the stack
                     PC += 2;
+                    Stack.Push(GetValue(a));
                     break;
                 case 3: // pop a — remove the top element from the stack and write it into <a>; empty stack = error
                     PC += 2;
@@ -84,7 +87,7 @@ public class VM
                     PC += 1;
                     break;
                 case 19: // out a — write the character represented by ascii code <a> to the terminal
-                    Output.Write((char)a);
+                    Output.Write((char)GetValue(a));
                     PC += 2;
                     break;
                 case 20: // in a — read a character from the terminal and write its ascii code to <a>; it can be assumed that once input starts, it will continue until a newline is encountered; this means that you can safely read whole lines from the keyboard and trust that they will be fully read
@@ -94,6 +97,18 @@ public class VM
                     PC += 1;
                     break;
             }
+        }
+    }
+
+    private ushort GetValue(ushort b)
+    {
+        if (b > 32767)
+        {
+            return Memory[b];
+        }
+        else
+        {
+            return b;
         }
     }
 }
